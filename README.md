@@ -19,6 +19,18 @@ npm install
 
 Set up the environment variables appropriately by renaming `.env.example` to `.env` and updating it.
 
+Create a database: 
+
+```
+createdb wire_dev
+```
+Navigate to the port and test the endpoints on postman
+
+Run migrations to create tables:
+
+```
+sequelize db:migrate
+```
 
 Start the dev server:
 
