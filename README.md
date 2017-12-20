@@ -31,6 +31,11 @@ Run migrations to create tables:
 ```
 sequelize db:migrate
 ```
+Run seeders:
+
+```
+sequelize db:seed:all
+```
 
 Start the dev server:
 
