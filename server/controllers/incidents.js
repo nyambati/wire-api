@@ -106,7 +106,7 @@ module.exports = {
           dateOccurred: req.body.dateOccurred,
           statusId: req.body.statusId || 1,
           locationId,
-          levelId: req.body.levelId,
+          levelId: req.body.levelId || 3
         });
       })
       .then(incident => {
