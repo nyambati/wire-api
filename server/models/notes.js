@@ -1,6 +1,13 @@
-'use strict';
+
+let cuid = require('cuid');
+
 module.exports = (sequelize, DataTypes) => {
   const Notes = sequelize.define('Notes', {
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      defaultValue: () => cuid()
+    },
     note: {
       type: DataTypes.TEXT,
       allowNull: false
@@ -16,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'userId',
           onDelete: 'CASCADE'
         });
+      }
     }
-  }
-});
+  });
   return Notes;
 };

@@ -1,4 +1,4 @@
-'use strict';
+
 
 module.exports = (sequelize, DataTypes) => {
   const Users = sequelize.define('Users', {
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       unique: true,
     },
-    name: {
+    username: {
       type: DataTypes.TEXT,
       allowNull: false
     },
@@ -24,36 +24,38 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }
   },
-    {
-      classMethods: {
-        associate: (models) => {
-          Users.hasMany(models.Incidents, {
-            foreignKey: 'userId',
-            as: "incidents"
-          });
-          Users.hasMany(models.Notes, {
-            foreignKey: 'userId',
-            as: 'notes'
-          });
-          Users.hasMany(models.Chats, {
-            foreignKey: 'userId',
-            as: 'chats'
-          });
-          Users.hasMany(models.Witnesses, {
-            foreignKey: 'userId',
-            as: 'witnesses'
-          });
-          Users.hasMany(models.Assignees, {
-            foreignKey: 'userId',
-            as: 'assignees'
-          });
-          Users.belongsTo(models.Roles, {
-            foreignKey: 'roleId',
-            onDelete: 'CASCADE',
-            allowNull: false
-          });
-        },
+  {
+    classMethods: {
+      associate: (models) => {
+        Users.hasMany(models.Chats, {
+          foreignKey: 'userId',
+          as: 'chats'
+        });
+        Users.belongsTo(models.Roles, {
+          foreignKey: 'roleId',
+          onDelete: 'CASCADE',
+          allowNull: false
+        });
+        Users.belongsToMany(models.Incidents, {
+          through: 'userIncidents',
+          foreignKey: 'userId',
+          as: 'reportedIncidents',
+          otherKey: 'incidentId'
+        });
+        Users.belongsToMany(models.Incidents, {
+          through: 'assigneeIncidents',
+          foreignKey: 'userId',
+          as: 'assignedIncidents',
+          otherKey: 'incidentId'
+        });
+        Users.belongsToMany(models.Incidents, {
+          through: 'Witnesses',
+          foreignKey: 'userId',
+          as: 'incidentWitnesses',
+          otherKey: 'incidentId'
+        });
       },
-    });
+    },
+  });
   return Users;
 };

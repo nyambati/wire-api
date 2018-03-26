@@ -1,26 +1,30 @@
-'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Witnesses', {
+    return queryInterface.createTable('assigneeIncidents', {
       userId: {
         type: Sequelize.STRING,
         onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         references: {
           model: 'Users',
           key: 'id',
-          as: 'userId',
-          allowNull: false
+          as: 'userId'
         }
       },
       incidentId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         references: {
           model: 'Incidents',
           key: 'id',
-          as: 'incidentId',
-          allowNull: false
+          as: 'incidentId'
         }
+      },
+      assignedRole: {
+        type:   Sequelize.ENUM,
+        values: ['ccd', 'assignee', 'other']
       },
       createdAt: {
         allowNull: false,
@@ -33,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Witnesses');
+    return queryInterface.dropTable('assigneeIncidents');
   }
 };

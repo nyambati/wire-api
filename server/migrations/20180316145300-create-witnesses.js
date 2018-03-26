@@ -1,36 +1,25 @@
 
-let cuid = require('cuid');
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Notes', {
-      id: {
-        allowNull: false,
-        primaryKey: true,
+    return queryInterface.createTable('Witnesses', {
+      userId: {
         type: Sequelize.STRING,
-        defaultValue: () => cuid()
-      },
-      note: {
-        type: Sequelize.TEXT
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        references: {
+          model: 'Users',
+          key: 'id',
+          as: 'userId'
+        }
       },
       incidentId: {
         type: Sequelize.STRING,
         onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         references: {
           model: 'Incidents',
           key: 'id',
-          as: 'incidentId',
-          allowNull: false
-        }
-      },
-      userId: {
-        type: Sequelize.STRING,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Users',
-          key: 'id',
-          as: 'userId',
-          allowNull: false
+          as: 'incidentId'
         }
       },
       createdAt: {
@@ -40,10 +29,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
+      }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Notes');
+    return queryInterface.dropTable('Witnesses');
   }
 };

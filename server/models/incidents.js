@@ -1,6 +1,13 @@
-'use strict';
+
+let cuid = require('cuid');
+
 module.exports = (sequelize, DataTypes) => {
   const Incidents = sequelize.define('Incidents', {
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      defaultValue: () => cuid()
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false
@@ -16,11 +23,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     classMethods: {
       associate: (models) => {
-        Incidents.belongsTo(models.Users, {
-        foreignKey: 'userId',
-        onDelete: 'CASCADE',
-        allowNull: false
-      });
         Incidents.belongsTo(models.Categories, {
           foreignKey: 'categoryId',
           onDelete: 'CASCADE',
@@ -48,16 +50,26 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'incidentId',
           as: 'chats'
         });
-        Incidents.hasMany(models.Witnesses, {
+        Incidents.belongsToMany(models.Users, {
+          through: 'userIncidents',
           foreignKey: 'incidentId',
-          as: 'witnesses'
+          as: 'reporter',
+          otherKey: 'userId'
         });
-        Incidents.belongsTo(models.Assignees, {
-          foreignKey: 'assigneeId',
-          onDelete: 'CASCADE',
+        Incidents.belongsToMany(models.Users, {
+          through: 'assigneeIncidents',
+          foreignKey: 'incidentId',
+          as: 'assignees',
+          otherKey: 'userId'
         });
+        Incidents.belongsToMany(models.Users, {
+          through: 'Witnesses',
+          foreignKey: 'incidentId',
+          as: 'witnesses',
+          otherKey: 'userId'
+        });
+      }
     }
-  }
-});
+  });
   return Incidents;
 };

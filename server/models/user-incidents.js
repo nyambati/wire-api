@@ -1,6 +1,7 @@
 
+
 module.exports = (sequelize, DataTypes) => {
-  const Witnesses = sequelize.define('Witnesses', {
+  const userIncidents = sequelize.define('userIncidents', {
     userId: {
       type: DataTypes.STRING,
       allowNull: false
@@ -10,5 +11,5 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }
   });
-  return Witnesses;
+  return userIncidents;
 };

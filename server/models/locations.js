@@ -1,6 +1,13 @@
-'use strict';
+
+let cuid = require('cuid');
+
 module.exports = (sequelize, DataTypes) => {
   const Locations = sequelize.define('Locations', {
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      defaultValue: () => cuid()
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -20,11 +27,11 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: (models) => {
         Locations.hasMany(models.Incidents, {
-        foreignKey: 'locationId',
-        as: 'incidents'
-      })
+          foreignKey: 'locationId',
+          as: 'incidents'
+        });
+      }
     }
-  }
-});
+  });
   return Locations;
 };
