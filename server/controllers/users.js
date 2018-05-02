@@ -5,15 +5,19 @@ const Role = require('../models').Roles;
 const Location = require('../models').Locations;
 const LocationService = require('./locations');
 
+const jwt = require('jsonwebtoken');
+const secretKey = process.env.SECRET_KEY;
 
-let includes = [{
-  model: Role,
-  attributes: ['name']
-},
-{
-  model: Location,
-  attributes: ['name', 'centre', 'country']
-}];
+let includes = [
+  {
+    model: Role,
+    attributes: ['name']
+  },
+  {
+    model: Location,
+    attributes: ['name', 'centre', 'country']
+  }
+];
 
 module.exports = {
   // add a user
@@ -48,13 +52,44 @@ module.exports = {
         res.status(400).send(error);
       });
   },
+
+  // login a user
+  login(req, res) {
+    return User.findOne(
+      { where: { email: req.body.email } },
+      console.log('.....', req.body.email)
+    )
+      .then(user => {
+        if (!user) {
+          console.log('user>>>', user);
+          return res.status(401).send({ message: 'Invalid user' });
+        }
+        const token = jwt.sign(
+          { id: user.id, roleId: user.roleId },
+          secretKey,
+          { expiresIn: '24h' }
+        );
+        return res.status(200).send({
+          message: 'You were successfully logged in',
+          user,
+          token,
+          expiresIn: '24h'
+        });
+      })
+      .catch(() => {
+        res.status(401).send({ message: 'You are not authorised' });
+      });
+  },
+
   // GET admins/super admins
   list(req, res) {
     return User.findAll({
       include: includes
     })
       .then(user => {
-        return res.status(200).send({ data: { users: user }, status: 'success' });
+        return res
+          .status(200)
+          .send({ data: { users: user }, status: 'success' });
       })
       .catch(error => {
         errorLogs.catchErrors(error);
@@ -85,7 +120,7 @@ module.exports = {
           through: {
             attributes: []
           }
-        },
+        }
       ]
     })
       .then(user => {
